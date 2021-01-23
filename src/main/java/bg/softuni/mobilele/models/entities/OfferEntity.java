@@ -34,8 +34,9 @@ public class OfferEntity extends BaseEntity {
     @ManyToOne
     private ModelEntity model;
 
-    @ManyToOne
-    private UserEntity seller;
+    // TODO uncomment when user come into the game
+//    @ManyToOne
+//    private UserEntity seller;
 
     public String getDescription() {
         return description;
@@ -101,13 +102,13 @@ public class OfferEntity extends BaseEntity {
         this.model = model;
     }
 
-    public UserEntity getSeller() {
-        return seller;
-    }
-
-    public void setSeller(UserEntity seller) {
-        this.seller = seller;
-    }
+//    public UserEntity getSeller() {
+//        return seller;
+//    }
+//
+//    public void setSeller(UserEntity seller) {
+//        this.seller = seller;
+//    }
 
     @Override
     public String toString() {
@@ -120,7 +121,7 @@ public class OfferEntity extends BaseEntity {
                 ", transmission=" + transmission +
                 ", year=" + year +
                 ", model=" + model +
-                ", seller=" + seller +
+             //   ", seller=" + seller +
                 ", id=" + id +
                 ", created=" + created +
                 ", modified=" + modified +

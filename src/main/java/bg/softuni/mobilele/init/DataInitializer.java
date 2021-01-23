@@ -3,14 +3,18 @@ package bg.softuni.mobilele.init;
 import bg.softuni.mobilele.models.entities.BaseEntity;
 import bg.softuni.mobilele.models.entities.BrandEntity;
 import bg.softuni.mobilele.models.entities.ModelEntity;
+import bg.softuni.mobilele.models.entities.OfferEntity;
+import bg.softuni.mobilele.models.entities.enums.EngineEnum;
 import bg.softuni.mobilele.models.entities.enums.ModelCategoryEnum;
+import bg.softuni.mobilele.models.entities.enums.TransmissionEnum;
 import bg.softuni.mobilele.repositories.BrandRepository;
 import bg.softuni.mobilele.repositories.ModelRepository;
+import bg.softuni.mobilele.repositories.OfferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -19,11 +23,13 @@ public class DataInitializer implements CommandLineRunner {
 
     private final ModelRepository modelRepository;
     private final BrandRepository brandRepository;
+    private final OfferRepository offerRepository;
 
     @Autowired
-    public  DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository){
+    public  DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository, OfferRepository offerRepository){
         this.modelRepository = modelRepository;
         this.brandRepository = brandRepository;
+        this.offerRepository = offerRepository;
     }
 
     @Override
@@ -39,10 +45,30 @@ public class DataInitializer implements CommandLineRunner {
 
         brandRepository.saveAll(List.of(fordBrand, hondaBrand));
 
-        initFiesta(fordBrand);
+        ModelEntity fiestaModel = initFiesta(fordBrand);
         initEscort(fordBrand);
         initNC750S(hondaBrand);
+
+        createFiestaOffer(fiestaModel);
     }
+
+    private void createFiestaOffer(ModelEntity model){
+
+        OfferEntity fiestaOffer = new OfferEntity();
+        fiestaOffer.setEngine(EngineEnum.GASOLINE);
+        fiestaOffer.setImageUrl("https://media.evo.co.uk/image/private/s--BabPcxyh--/v1597937930/evo/2020/08/Mk8%20Ford%20Fiesta%20review%20-6.jpg");
+        fiestaOffer.setMileage(40000);
+        fiestaOffer.setPrice(BigDecimal.valueOf(12000));
+        fiestaOffer.setYear(2019);
+        fiestaOffer.setDescription("Karana e ot nemska baba. Zimata e v garaj.");
+        fiestaOffer.setTransmission(TransmissionEnum.MANUAL);
+        fiestaOffer.setModel(model);
+
+        setCurrentTimesStamps(fiestaOffer);
+
+        this.offerRepository.save(fiestaOffer);
+    }
+
 
     private ModelEntity initNC750S(BrandEntity hondaBrand){
         ModelEntity nc750s = new ModelEntity();
