@@ -1,17 +1,16 @@
 package bg.softuni.mobilele.init;
 
-import bg.softuni.mobilele.models.entities.BaseEntity;
-import bg.softuni.mobilele.models.entities.BrandEntity;
-import bg.softuni.mobilele.models.entities.ModelEntity;
-import bg.softuni.mobilele.models.entities.OfferEntity;
+import bg.softuni.mobilele.models.entities.*;
 import bg.softuni.mobilele.models.entities.enums.EngineEnum;
 import bg.softuni.mobilele.models.entities.enums.ModelCategoryEnum;
 import bg.softuni.mobilele.models.entities.enums.TransmissionEnum;
 import bg.softuni.mobilele.repositories.BrandRepository;
 import bg.softuni.mobilele.repositories.ModelRepository;
 import bg.softuni.mobilele.repositories.OfferRepository;
+import bg.softuni.mobilele.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -24,12 +23,16 @@ public class DataInitializer implements CommandLineRunner {
     private final ModelRepository modelRepository;
     private final BrandRepository brandRepository;
     private final OfferRepository offerRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public  DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository, OfferRepository offerRepository){
+    public  DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository, OfferRepository offerRepository, UserRepository userRepository, PasswordEncoder passwordEncoder){
         this.modelRepository = modelRepository;
         this.brandRepository = brandRepository;
         this.offerRepository = offerRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -50,6 +53,21 @@ public class DataInitializer implements CommandLineRunner {
         initNC750S(hondaBrand);
 
         createFiestaOffer(fiestaModel);
+
+        initAdmin();
+    }
+
+    private void initAdmin(){
+
+        UserEntity admin = new UserEntity();
+        admin.setFirstName("Petar");
+        admin.setLastName("Dimitrov");
+        admin.setUsername("admin");
+        admin.setPassword(passwordEncoder.encode("topsecret"));
+
+        setCurrentTimesStamps(admin);
+
+       this.userRepository.save(admin);
     }
 
     private void createFiestaOffer(ModelEntity model){

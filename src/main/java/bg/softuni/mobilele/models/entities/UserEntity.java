@@ -13,6 +13,9 @@ public class UserEntity extends BaseEntity {
     @Column(name="username")
     private String username;
 
+    @Column(name="password")
+    private String password;
+
     @Column(name="first_name")
     private String firstName;
 
@@ -28,12 +31,23 @@ public class UserEntity extends BaseEntity {
     @ManyToMany
     private List<UserRoleEntity> userRoles;
 
+    public UserEntity() {
+    }
+
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {
@@ -80,14 +94,12 @@ public class UserEntity extends BaseEntity {
     public String toString() {
         return "UserEntity{" +
                 "username='" + username + '\'' +
+                ", password='N/A" + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", isActive=" + isActive +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", userRoles=" + userRoles +
-                ", id=" + id +
-                ", created=" + created +
-                ", modified=" + modified +
                 '}';
     }
 }
