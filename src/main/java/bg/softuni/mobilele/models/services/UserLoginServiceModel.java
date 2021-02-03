@@ -9,7 +9,7 @@ public class UserLoginServiceModel {
     private String password;
 
     @NotNull
-    @Size(min=2)
+    @Size(min = 2)
     public String getUsername() {
         return username;
     }
@@ -19,7 +19,7 @@ public class UserLoginServiceModel {
     }
 
     @NotNull
-    @Size(min=3)
+    @Size(min = 3)
     public String getPassword() {
         return password;
     }
