@@ -4,10 +4,8 @@ import bg.softuni.mobilele.models.entities.*;
 import bg.softuni.mobilele.models.entities.enums.EngineEnum;
 import bg.softuni.mobilele.models.entities.enums.ModelCategoryEnum;
 import bg.softuni.mobilele.models.entities.enums.TransmissionEnum;
-import bg.softuni.mobilele.repositories.BrandRepository;
-import bg.softuni.mobilele.repositories.ModelRepository;
-import bg.softuni.mobilele.repositories.OfferRepository;
-import bg.softuni.mobilele.repositories.UserRepository;
+import bg.softuni.mobilele.models.entities.enums.UserRoleEnum;
+import bg.softuni.mobilele.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,14 +22,16 @@ public class DataInitializer implements CommandLineRunner {
     private final BrandRepository brandRepository;
     private final OfferRepository offerRepository;
     private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public  DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository, OfferRepository offerRepository, UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public DataInitializer(ModelRepository modelRepository, BrandRepository brandRepository, OfferRepository offerRepository, UserRepository userRepository, UserRoleRepository userRoleRepository, PasswordEncoder passwordEncoder) {
         this.modelRepository = modelRepository;
         this.brandRepository = brandRepository;
         this.offerRepository = offerRepository;
         this.userRepository = userRepository;
+        this.userRoleRepository = userRoleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -54,23 +54,45 @@ public class DataInitializer implements CommandLineRunner {
 
         createFiestaOffer(fiestaModel);
 
-        initAdmin();
+
+        initUsers();
     }
 
-    private void initAdmin(){
+
+    private void initUsers() {
+
+        UserRoleEntity adminRole = new UserRoleEntity();
+        adminRole.setRole(UserRoleEnum.ADMIN);
+
+        UserRoleEntity userRole = new UserRoleEntity();
+        userRole.setRole(UserRoleEnum.USER);
+
+        userRoleRepository.saveAll(List.of(adminRole,userRole));
+
 
         UserEntity admin = new UserEntity();
-        admin.setFirstName("Petar");
-        admin.setLastName("Dimitrov");
+        admin.setFirstName("Kiril");
+        admin.setLastName("Angelov");
         admin.setUsername("admin");
         admin.setPassword(passwordEncoder.encode("topsecret"));
+        admin.setUserRoles(List.of(adminRole, userRole));
 
         setCurrentTimesStamps(admin);
 
-       this.userRepository.save(admin);
+
+        UserEntity userPesho = new UserEntity();
+        userPesho.setFirstName("Petar");
+        userPesho.setLastName("Dimitrov");
+        userPesho.setUsername("pesho");
+        userPesho.setPassword(passwordEncoder.encode("topsecret"));
+        userPesho.setUserRoles(List.of(userRole));
+
+        setCurrentTimesStamps(userPesho);
+
+        this.userRepository.saveAll(List.of(admin,userPesho));
     }
 
-    private void createFiestaOffer(ModelEntity model){
+    private void createFiestaOffer(ModelEntity model) {
 
         OfferEntity fiestaOffer = new OfferEntity();
         fiestaOffer.setEngine(EngineEnum.GASOLINE);
@@ -88,7 +110,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
 
-    private ModelEntity initNC750S(BrandEntity hondaBrand){
+    private ModelEntity initNC750S(BrandEntity hondaBrand) {
         ModelEntity nc750s = new ModelEntity();
         nc750s.setName("NC750S");
         nc750s.setCategory(ModelCategoryEnum.MOTORCYCLE);
@@ -101,7 +123,7 @@ public class DataInitializer implements CommandLineRunner {
         return this.modelRepository.save(nc750s);
     }
 
-    private  ModelEntity initFiesta(BrandEntity fordBrand) {
+    private ModelEntity initFiesta(BrandEntity fordBrand) {
         ModelEntity fiesta = new ModelEntity();
         fiesta.setName("Fiesta");
         fiesta.setCategory(ModelCategoryEnum.CAR);
@@ -114,7 +136,7 @@ public class DataInitializer implements CommandLineRunner {
         return this.modelRepository.save(fiesta);
     }
 
-    private  ModelEntity initEscort(BrandEntity fordBrand) {
+    private ModelEntity initEscort(BrandEntity fordBrand) {
 
         ModelEntity eskort = new ModelEntity();
         eskort.setName("Escort");
@@ -129,7 +151,7 @@ public class DataInitializer implements CommandLineRunner {
         return this.modelRepository.save(eskort);
     }
 
-    private static void setCurrentTimesStamps(BaseEntity baseEntity){
+    private static void setCurrentTimesStamps(BaseEntity baseEntity) {
         baseEntity.setCreated(Instant.now());
         baseEntity.setModified(Instant.now());
     }
