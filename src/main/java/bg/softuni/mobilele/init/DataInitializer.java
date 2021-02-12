@@ -12,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 
 @Component
@@ -40,11 +39,11 @@ public class DataInitializer implements CommandLineRunner {
 
         BrandEntity fordBrand = new BrandEntity();
         fordBrand.setName("Ford");
-        setCurrentTimesStamps(fordBrand);
+
 
         BrandEntity hondaBrand = new BrandEntity();
         hondaBrand.setName("Honda");
-        setCurrentTimesStamps(hondaBrand);
+
 
         brandRepository.saveAll(List.of(fordBrand, hondaBrand));
 
@@ -77,17 +76,12 @@ public class DataInitializer implements CommandLineRunner {
         admin.setPassword(passwordEncoder.encode("topsecret"));
         admin.setUserRoles(List.of(adminRole, userRole));
 
-        setCurrentTimesStamps(admin);
-
-
         UserEntity userPesho = new UserEntity();
         userPesho.setFirstName("Petar");
         userPesho.setLastName("Dimitrov");
         userPesho.setUsername("pesho");
         userPesho.setPassword(passwordEncoder.encode("topsecret"));
         userPesho.setUserRoles(List.of(userRole));
-
-        setCurrentTimesStamps(userPesho);
 
         this.userRepository.saveAll(List.of(admin,userPesho));
     }
@@ -104,8 +98,6 @@ public class DataInitializer implements CommandLineRunner {
         fiestaOffer.setTransmission(TransmissionEnum.MANUAL);
         fiestaOffer.setModel(model);
 
-        setCurrentTimesStamps(fiestaOffer);
-
         this.offerRepository.save(fiestaOffer);
     }
 
@@ -118,8 +110,6 @@ public class DataInitializer implements CommandLineRunner {
         nc750s.setStartYear(2014);
         nc750s.setBrand(hondaBrand);
 
-        setCurrentTimesStamps(nc750s);
-
         return this.modelRepository.save(nc750s);
     }
 
@@ -130,8 +120,6 @@ public class DataInitializer implements CommandLineRunner {
         fiesta.setImageUrl("https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/2017_Ford_Fiesta_Zetec_Turbo_1.0_Front.jpg/413px-2017_Ford_Fiesta_Zetec_Turbo_1.0_Front.jpg");
         fiesta.setStartYear(1976);
         fiesta.setBrand(fordBrand);
-
-        setCurrentTimesStamps(fiesta);
 
         return this.modelRepository.save(fiesta);
     }
@@ -146,13 +134,8 @@ public class DataInitializer implements CommandLineRunner {
         eskort.setEndYear(2002);
         eskort.setBrand(fordBrand);
 
-        setCurrentTimesStamps(eskort);
-
         return this.modelRepository.save(eskort);
     }
 
-    private static void setCurrentTimesStamps(BaseEntity baseEntity) {
-        baseEntity.setCreated(Instant.now());
-        baseEntity.setModified(Instant.now());
-    }
+
 }
