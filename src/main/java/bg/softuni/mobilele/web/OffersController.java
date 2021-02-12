@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
@@ -31,14 +28,13 @@ public class OffersController {
     }
 
     @ModelAttribute("offerServiceModel")
-    public OfferServiceModel offerModel(){
+    public OfferServiceModel offerModel() {
         return new OfferServiceModel();
     }
 
 
-
     @GetMapping("/add")
-    public String newOffer(Model model){
+    public String newOffer(Model model) {
         model.addAttribute("brands", brandService.getAllBrands());
         model.addAttribute("engines", EngineEnum.values());
         model.addAttribute("transmissions", TransmissionEnum.values());
@@ -48,24 +44,41 @@ public class OffersController {
     @PostMapping("/add")
     public String addOffer(@Valid @ModelAttribute OfferServiceModel offerServiceModel,
                            BindingResult bindingResult,
-                           RedirectAttributes redirectAttributes){
+                           RedirectAttributes redirectAttributes) {
 
 
-        if(bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("offerServiceModel", offerServiceModel);
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.offerServiceModel", bindingResult);
             return "redirect:/offers/add";
         }
 
-        offerService.save(offerServiceModel);
+        Long newOfferId = offerService.save(offerServiceModel);
+        return "redirect:/offers/offer/" + newOfferId;
+    }
+
+    @GetMapping("/offer/{id}")
+    public String offerDetails(@PathVariable String id,
+                               Model model) {
+
+        model.addAttribute("id", id);
+
+        return "details";
+    }
+
+    @DeleteMapping("/offer/{id}")
+    public String delete(@PathVariable Long id,
+                         Model model) {
+
+        offerService.delete(id);
+
         return "redirect:/offers/all";
     }
 
-
     @GetMapping("/all")
     public String getAllOffers(Model model) {
-      //  model.addAttribute("models", this.offerService.getAllOffers());
-
+        //TODO:
+        //model.addAttribute("models", offerService.getAllOffers());
         return "offers";
     }
 

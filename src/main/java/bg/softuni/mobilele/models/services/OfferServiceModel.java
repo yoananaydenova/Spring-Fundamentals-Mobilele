@@ -54,7 +54,7 @@ public class OfferServiceModel  {
     }
 
     @NotNull
-    @DecimalMin(value = "100")
+    @DecimalMin("100")
     public BigDecimal getPrice() {
         return price;
     }
