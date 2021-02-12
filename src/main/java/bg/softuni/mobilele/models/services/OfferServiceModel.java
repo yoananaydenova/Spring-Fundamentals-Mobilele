@@ -32,7 +32,7 @@ public class OfferServiceModel  {
         return this;
     }
 
-    @NotNull
+    @NotEmpty
     public String getImageUrl() {
         return imageUrl;
     }
@@ -43,7 +43,7 @@ public class OfferServiceModel  {
     }
 
     @NotNull
-    @Positive
+    @PositiveOrZero
     public Integer getMileage() {
         return mileage;
     }
@@ -53,6 +53,7 @@ public class OfferServiceModel  {
         return this;
     }
 
+    @NotNull
     @DecimalMin(value = "100")
     public BigDecimal getPrice() {
         return price;
